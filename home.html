@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>neighborhood explorer</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+</head>
+<body>
+  <nav class="light-green darken-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo"></a>neighborhood explorer
+      <ul class="right hide-on-med-and-down">
+        <li><a href="#">contact</a></li>
+        <li><a href="#">faq</a></li>
+        <li><a href="#">blog</a></li>
+      </ul>
+
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="#">contact</a></li>
+        <li><a href="#">faq</a></li>
+        <li><a href="#">blog</a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <br><br>
+      <h1 class="header center blue-grey-text">start exploring</h1>
+
+      <br><br>
+
+    </div>
+  </div>
+
+
+  <div class="container">
+    <div class="section">
+      <div class="row">
+        <form class="col s12 center">
+          <div class="row center">
+            <div class="input-field col s10 offset-s1">
+              <input id="search" type="text" class="input-field col s10">
+              <label for="search">let's explore</label><a href="#" id="search" class="btn-floating waves-effect waves-light light-green darken-1"><i class="material-icons">search</i></a>
+
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <br><br>
+
+    <div class="section">
+      <p>Curabitur aliquet quam id dui posuere blandit. Cras ultricies ligula sed magna dictum porta. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Quisque velit nisi, pretium ut lacinia in, elementum id enim. Nulla porttitor accumsan tincidunt. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Vivamus suscipit tortor eget felis porttitor volutpat. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Curabitur aliquet quam id dui posuere blandit.</p>
+    </div>
+  </div>
+
+  <footer class="page-footer blue-grey lighten-2">
+    <div class="container">
+      <div class="row">
+        <div class="col s12">
+          <h5 class="white-text">Company Bio</h5>
+          <p class="grey-text text-lighten-4">We are a team of developers looking to do something awesome.  We hope you like it and find it's use value.</p>
+
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12">
+          <ul>
+            <li><a class="white-text" href="#!">contact</a></li>
+            <li><a class="white-text" href="#!">faq</a></li>
+            <li><a class="white-text" href="#!">blog</a></li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+      &#169; Copyright 2017 <a class="light-green-text text-lighten-4" href="#">Cooing Whales</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+  <script src="xml2json.js"></script>
+  <script type="text/javascript">
+      // Event listener for all button element
+      $.ajaxPrefilter(function(options) {
+          if (options.crossDomain && jQuery.support.cors) {
+              options.url = 'https://cors-anywhere.herokuapp.com/' + options.url;
+          }
+      });
+
+      $.ajax({
+              dataType: "xml",
+              url: 'http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address=2114+Bigelow+Ave&citystatezip=Seattle%2C+WA',
+              method: "GET"
+          })
+          // After the data comes back from the API
+          .done(function(response) {
+              var jsonData = $.xml2json(response);
+              var parsedResult = jsonData["#document"]["SearchResults:searchresults"].response.results.result;
+              console.log(parsedResult); //Look in console.
+              var neighborhood = JSON.stringify(parsedResult.localRealEstate.region.$.name);
+              console.log(neighborhood);
+          });
+
+  </script>
+
+  </body>
+</html>
