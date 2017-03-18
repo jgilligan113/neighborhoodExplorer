@@ -3,7 +3,7 @@
  var placesAddress ='';
  function initAutocomplete() {
          var map = new google.maps.Map(document.getElementById('map'), {
-           center: {lat: -33.8688, lng: 151.2195},
+           center: {lat: 32.0812053, lng: -81.0934179},
            zoom: 13,
            mapTypeId: 'roadmap'
          });
@@ -12,7 +12,7 @@
          var input = document.getElementById('pac-input');
          console.log(input);
          var searchBox = new google.maps.places.SearchBox(input);
-         map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+         //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
          // Bias the SearchBox results towards current map's viewport.
          map.addListener('bounds_changed', function() {
