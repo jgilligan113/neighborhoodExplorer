@@ -2,7 +2,7 @@
  //get map
  var placesAddress ='';
  function initAutocomplete() {
-         var map = new google.maps.Map(document.getElementsByClassName('map'), {
+         var map = new google.maps.Map(document.getElementById('map'), {
            center: {lat: -33.8688, lng: 151.2195},
            zoom: 13,
            mapTypeId: 'roadmap'
@@ -115,23 +115,19 @@
 
            };
 
-
-
            console.log(response1.results[0].address_components[0].long_name);
            console.log(response1.results[0].address_components[1].long_name);
            console.log(response1.results[0].address_components[cityIndex].long_name);
            console.log(response1.results[0].address_components[stateIndex].long_name);
            console.log(response1.results[0].address_components[zipIndex].long_name);
 
-
            var streetAddress = response1.results[0].address_components[0].long_name + "+" +
                                response1.results[0].address_components[1].long_name.replace(/ /g, "+");
            console.log(streetAddress);
-
-          var cityStateZip = response1.results[0].address_components[cityIndex].long_name.replace(/ /g, "+")  + "+" +
+           var cityStateZip = response1.results[0].address_components[cityIndex].long_name.replace(/ /g, "+")  + "+" +
                              response1.results[0].address_components[stateIndex].long_name.replace(/ /g, "+")  + "+" +
                              response1.results[0].address_components[zipIndex].long_name;
-          console.log(cityStateZip);
+           console.log(cityStateZip);
          });
 
      // Event listener for all button element
