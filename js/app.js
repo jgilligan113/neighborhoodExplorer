@@ -152,7 +152,7 @@
   // end of on-click
 
 
-    function getZillowData(city, state) {
+    function getZillowData(city, state, streetAddress, cityStateZip) {
     console.log(streetAddress)
      // Event listener for all button element
      $.ajaxPrefilter(function(options) {
