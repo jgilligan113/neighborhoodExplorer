@@ -108,7 +108,8 @@
   <script src="js/init.js"></script>
   <script src="xml2json.js"></script>
   <script type="text/javascript">
-  //var input = "";
+  var input = "";
+  var addr1 = "";
   //get map
 
   function initAutocomplete() {
@@ -117,19 +118,16 @@
             zoom: 13,
             mapTypeId: 'roadmap'
           });
-
           // Create the search box and link it to the UI element.
           var input = document.getElementById('pac-input');
           console.log(input);
           var searchBox = new google.maps.places.SearchBox(input);
           map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
           // Bias the SearchBox results towards current map's viewport.
           map.addListener('bounds_changed', function() {
             searchBox.setBounds(map.getBounds());
             console.log("singh-----------"+map.getBounds());
           });
-
           var markers = [];
           // Listen for the event fired when the user selects a prediction and retrieve
           // more details for that place.
@@ -140,13 +138,11 @@
             if (places.length == 0) {
               return;
             }
-
             // Clear out the old markers.
             markers.forEach(function(marker) {
               marker.setMap(null);
             });
             markers = [];
-
             // For each place, get the icon, name and location.
             var bounds = new google.maps.LatLngBounds();
             places.forEach(function(place) {
@@ -161,7 +157,6 @@
                 anchor: new google.maps.Point(17, 34),
                 scaledSize: new google.maps.Size(25, 25)
               };
-
               // Create a marker for each place.
               markers.push(new google.maps.Marker({
                 map: map,
@@ -169,21 +164,17 @@
                 title: place.name,
                 position: place.geometry.location
               }));
-
               if (place.geometry.viewport) {
                 // Only geocodes have viewport.
                 bounds.union(place.geometry.viewport);
-
               } else {
                 bounds.extend(place.geometry.location);
               }
             });
             map.fitBounds(bounds);
-
           });
         }
       //api call to google
-
       // var queryURLGoogle = 'https://maps.googleapis.com/maps/api/geocode/json?address='+ input +'&key=AIzaSyCm1RMUd3GGzW25X_Vl463MG-qlQ_CEkQg';
       // console.log(queryURLGoogle);
       //
