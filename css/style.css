@@ -97,10 +97,11 @@
      width: 345px;
    }
 #homesForSale, #wikiInfo, #neighborhoods, #weather, #previousSearch{
-   
+
    margin-right: 5%;
  }
 
  .progress{
    display:none;
+   background-color: #eceff1;
  }

@@ -143,7 +143,9 @@
   });
 
     function getZillowData(city, state, streetAddress, cityStateZip) {
+    $('.sourceInfo').html("");
     console.log(streetAddress)
+
      // Event listener for all button element
      $.ajaxPrefilter(function(options) {
          if (options.crossDomain && jQuery.support.cors) {
@@ -151,7 +153,7 @@
          }
      });
 //console.log('http://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood');
-//console.log('http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address='+streetAddress+'&citystatezip='+cityStateZip);
+console.log('http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address='+streetAddress+'&citystatezip='+cityStateZip);
 //get list of neighborhoods for address entered using api call to zillow using Region Children url
      $.ajax({
              dataType: "xml",
@@ -166,11 +168,18 @@
                 console.log(parsedResult); //Look in console.
                 console.log(streetAddress, cityStateZip);
                 console.log(parsedResult.region[0].name);
+
                 $('#neighborhoods').on('click', function(){
+
+                     $('.sourceInfo').html("");
+                     var listDiv = $("<div>");
+                     listDiv.html('<h4>Neighborhood Details</h4><br><ul></ul>');
                      for (i=0; i<parsedResult.region.length; i++){
-                     var neighborhoodList = $("<ul>").attr("class", "neighborhoodListItem");
-                     neighborhoodList.html('<li>'+parsedResult.region[i].name+'</li>');
-                     $(".sourceInfo").append(neighborhoodList);
+                     var neighborhoodList = '<li>'+parsedResult.region[i].name+'</li>';
+                     listDiv.append(neighborhoodList);
+                     $('.sourceInfo').html(listDiv)
+                     console.log(neighborhoodList);
+
                    }
                 });
               });
@@ -182,18 +191,29 @@
                     // After the data comes back from the API - this is hte zillow deep search results where we get details on specific address.
                     .done(function(response3) {
                       console.log(response3);
+                      $(".progress").css('display', 'none');
                       var jsonData2 = $.xml2json(response3);
+                           var parsedResultError = jsonData2["#document"]["SearchResults:searchresults"].message.text;
+                           if (parsedResultError == 'Error: no exact match found for input address') {
+                             alert("Error, no exact match for address");
+
+                           console.log(parsedResultError);
+                         } else {
                            var parsedResult2 = jsonData2["#document"]["SearchResults:searchresults"].response.results.result;
-                           console.log(parsedResult2);
-                           var bedrooms = parsedResult2.bedrooms;
-                           var bathrooms = parsedResult2.bathrooms;
-                           var lastSold = parsedResult2.lastSoldPrice._;
-                           var sqrFt = parsedResult2.finishedSqFt;
-                           var neighborhood = parsedResult2.localRealEstate.region.$.name;
-                           var addressDetails = $("<div>").attr("class", "addressDetails");
-                           addressDetails.html('<p><h4>Home Details</h4><br>Bedrooms: '+bedrooms+'<br>Bathrooms: '+bathrooms+'<br>Finished Square Feet: '+sqrFt+'<br>Last Sold for: $'+lastSold+'<br>Neighborhood: '+neighborhood+'</p>');//Look in console.
-                           $('.sourceInfo').append(addressDetails);
-                           $(".progress").css('display', 'none');
+
+                             console.log(parsedResult2);
+                             var bedrooms = parsedResult2.bedrooms;
+                             var bathrooms = parsedResult2.bathrooms;
+                             var lastSold = parsedResult2.lastSoldPrice._;
+                             var sqrFt = parsedResult2.finishedSqFt;
+                             var neighborhood = parsedResult2.localRealEstate.region.$.name;
+                             var addressDetails = $("<div>").attr("class", "addressDetails");
+                             addressDetails.html('<p><h4>Home Details</h4><br>Bedrooms: '+bedrooms+'<br>Bathrooms: '+bathrooms+'<br>Finished Square Feet: '+sqrFt+'<br>Last Sold for: $'+lastSold+'<br>Neighborhood: '+neighborhood+'</p>');//Look in console.
+                             $('.sourceInfo').html("");
+                             $('.sourceInfo').append(addressDetails);
+                           }
+
+
 
          });
          }
