@@ -46,39 +46,40 @@
   <div class="container">
     <div class="section">
       <div class="row">
-        <form class="col s12 center">
-          <div class="row center">
-            <div class="input-field col s10 offset-1">
-              <input id="pac-input" type="text" class="input-field controls">
+        <div class="col s2"></div>
+        <form class="col s8">
+          <!--enter Contact us form-->
+          <div class="row">
+            <div class="input-field col s6">
+              <input id="first_name" type="text" class="validate">
+              <label for="first_name">First Name</label>
             </div>
-            <div class="input-field col s1">
-              <a href="#" id="search" class="btn-floating waves-effect waves-light light-green darken-1"><i class="material-icons">search</i></a>
-            </div>
-          </div>
-          <div class="row center">
-            <div class="col s11">
-              <div class="progress">
-                <div class="indeterminate"></div>
-              </div>
-              <div id="map"></div>
+            <div class="input-field col s6">
+              <input id="last_name" type="text" class="validate">
+              <label for="last_name">Last Name</label>
             </div>
           </div>
-          <div class="row center">
+          <div class="row">
             <div class="input-field col s12">
-              <a id="homesForSale" class="btn-floating btn-small waves-effect waves-light blue-grey lighten-2"><i class="material-icons">home</i></a>
-              <a id="wikiInfo" class="btn-floating btn-small waves-effect waves-light blue-grey lighten-2"><i class="material-icons">info_outline</i></a>
-              <a id="neighborhoods" class="btn-floating btn-small waves-effect waves-light blue-grey lighten-2"><i class="material-icons">room</i></a>
-              <a id="weather" class="btn-floating btn-small waves-effect waves-light blue-grey lighten-2"><i class="material-icons">cloud</i></a>
-              <a id="previousSearch" class="btn-floating btn-small waves-effect waves-light blue-grey lighten-2"><i class="material-icons">youtube_searched_for</i></a>
+              <input id="email" type="email" class="validate">
+              <label for="email" data-error="wrong" data-success="right">Email</label>
             </div>
           </div>
+          <div class="row">
+            <div class="input-field col s12">
+
+              <textarea id="textarea1" class="materialize-textarea"></textarea>
+
+              <label for="textarea1"><i class="material-icons">textsms</i>Comment</label>
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn waves-effect waves-light" type="submit" name="action">Submit
+              <i class="material-icons right">send</i>
+            </button>
           </div>
         </form>
-      </div>
-      <div class="row">
-        <div class="col s12 sourceInfo">
-
-        </div>
+        <div class="col s2"></div>
       </div>
     </div>
   </div>

@@ -137,6 +137,7 @@
                              response1.results[0].address_components[zipIndex].long_name;
            console.log("Here it is!!!! "+cityStateZip);
            getZillowData(city, state, streetAddress, cityStateZip);
+
          });
 //end of on-click for initial search parameters
   });
@@ -165,11 +166,13 @@
                 console.log(parsedResult); //Look in console.
                 console.log(streetAddress, cityStateZip);
                 console.log(parsedResult.region[0].name);
-              //   for (i=0; i<parsedResult.region.length; i++){
-              //   var neighborhoodList = $("<ul>").attr("class", "neighborhoodListItem");
-              //   neighborhoodList.html('<li>'+parsedResult.region[i].name+'</li>');
-              //   $(".sourceInfo").append(neighborhoodList);
-              // }
+                $('#neighborhoods').on('click', function(){
+                     for (i=0; i<parsedResult.region.length; i++){
+                     var neighborhoodList = $("<ul>").attr("class", "neighborhoodListItem");
+                     neighborhoodList.html('<li>'+parsedResult.region[i].name+'</li>');
+                     $(".sourceInfo").append(neighborhoodList);
+                   }
+                });
               });
                 $.ajax({
                         dataType: "xml",
@@ -184,13 +187,20 @@
                            console.log(parsedResult2);
                            var bedrooms = parsedResult2.bedrooms;
                            var bathrooms = parsedResult2.bathrooms;
-                           var lastSold = parsedResult2.lastSoldPrice;
+                           var lastSold = parsedResult2.lastSoldPrice._;
                            var sqrFt = parsedResult2.finishedSqFt;
                            var neighborhood = parsedResult2.localRealEstate.region.$.name;
                            var addressDetails = $("<div>").attr("class", "addressDetails");
-                           addressDetails.html('<p>Bedrooms: '+bedrooms+'<br>Bathrooms: '+bathrooms+'<br>Finished Square Feet: '+sqrFt+'<br>Last Sold for: $'+lastSold+'<br>Neighborhood: '+neighborhood+'</p>');//Look in console.
+                           addressDetails.html('<p><h4>Home Details</h4><br>Bedrooms: '+bedrooms+'<br>Bathrooms: '+bathrooms+'<br>Finished Square Feet: '+sqrFt+'<br>Last Sold for: $'+lastSold+'<br>Neighborhood: '+neighborhood+'</p>');//Look in console.
                            $('.sourceInfo').append(addressDetails);
                            $(".progress").css('display', 'none');
 
          });
          }
+
+      //    function showNeighborhoodData(){
+      //    for (i=0; i<parsedResult.region.length; i++){
+      //    var neighborhoodList = $("<ul>").attr("class", "neighborhoodListItem");
+      //    neighborhoodList.html('<li>'+parsedResult.region[i].name+'</li>');
+      //    $(".sourceInfo").append(neighborhoodList);
+      //  }}
