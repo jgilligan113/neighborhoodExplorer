@@ -81,7 +81,7 @@
        console.log ("Address formatted " + placesAddressFormatted);
 
        event.preventDefault();
-
+       $(".progress").css('display', 'block');
 
      //api call to google
 
@@ -138,6 +138,7 @@
            console.log("Here it is!!!! "+cityStateZip);
            getZillowData(city, state, streetAddress, cityStateZip);
          });
+//end of on-click for initial search parameters
   });
 
     function getZillowData(city, state, streetAddress, cityStateZip) {
@@ -150,9 +151,9 @@
      });
 //console.log('http://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood');
 //console.log('http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address='+streetAddress+'&citystatezip='+cityStateZip);
+//get list of neighborhoods for address entered using api call to zillow using Region Children url
      $.ajax({
              dataType: "xml",
-             //url: 'http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address='+streetAddress+'&citystatezip='+cityStateZip,
              url: 'http://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood',
              method: "GET"
          })
@@ -161,20 +162,35 @@
            console.log(response2);
            var jsonData = $.xml2json(response2);
                 var parsedResult = jsonData["#document"]["RegionChildren:regionchildren"].response.list;
-                //var parsedResult = jsonData["#document"]["SearchResults:searchresults"].response.results.result;
                 console.log(parsedResult); //Look in console.
                 console.log(streetAddress, cityStateZip);
+                console.log(parsedResult.region[0].name);
+              //   for (i=0; i<parsedResult.region.length; i++){
+              //   var neighborhoodList = $("<ul>").attr("class", "neighborhoodListItem");
+              //   neighborhoodList.html('<li>'+parsedResult.region[i].name+'</li>');
+              //   $(".sourceInfo").append(neighborhoodList);
+              // }
+              });
                 $.ajax({
                         dataType: "xml",
                         url: 'http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address='+streetAddress+'&citystatezip='+cityStateZip,
                         method: "GET"
                     })
-                    // After the data comes back from the API
+                    // After the data comes back from the API - this is hte zillow deep search results where we get details on specific address.
                     .done(function(response3) {
                       console.log(response3);
                       var jsonData2 = $.xml2json(response3);
                            var parsedResult2 = jsonData2["#document"]["SearchResults:searchresults"].response.results.result;
-                           console.log(parsedResult2); //Look in console.
+                           console.log(parsedResult2);
+                           var bedrooms = parsedResult2.bedrooms;
+                           var bathrooms = parsedResult2.bathrooms;
+                           var lastSold = parsedResult2.lastSoldPrice;
+                           var sqrFt = parsedResult2.finishedSqFt;
+                           var neighborhood = parsedResult2.localRealEstate.region.$.name;
+                           var addressDetails = $("<div>").attr("class", "addressDetails");
+                           addressDetails.html('<p>Bedrooms: '+bedrooms+'<br>Bathrooms: '+bathrooms+'<br>Finished Square Feet: '+sqrFt+'<br>Last Sold for: $'+lastSold+'<br>Neighborhood: '+neighborhood+'</p>');//Look in console.
+                           $('.sourceInfo').append(addressDetails);
+                           $(".progress").css('display', 'none');
+
          });
-       });
-     };
+         }
