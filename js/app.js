@@ -152,8 +152,10 @@
              options.url = 'https://cors-anywhere.herokuapp.com/' + options.url;
          }
      });
-//console.log('http://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood');
+console.log('http://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood');
 console.log('http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address='+streetAddress+'&citystatezip='+cityStateZip);
+console.log('http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/conditions/q/'+state+'/'+city+'.json');
+
 //get list of neighborhoods for address entered using api call to zillow using Region Children url
      $.ajax({
              dataType: "xml",
@@ -170,7 +172,6 @@ console.log('http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1
                 console.log(parsedResult.region[0].name);
 
                 $('#neighborhoods').on('click', function(){
-
                      $('.sourceInfo').html("");
                      var listDiv = $("<div>");
                      listDiv.html('<h4>Neighborhood Details</h4><br><ul></ul>');
@@ -179,9 +180,21 @@ console.log('http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1
                      listDiv.append(neighborhoodList);
                      $('.sourceInfo').html(listDiv)
                      console.log(neighborhoodList);
-
                    }
                 });
+
+                $('#weather').on('click', function(){
+                $.ajax({
+                    url : 'http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/forecast/q/'+state+'/'+city+'.json',
+                    method: 'GET'
+                    }).done(function (weather){
+                      console.log('F High------------'+weather.forecast.simpleforecast.forecastday[0].high.fahrenheit);
+                      console.log('C High------------'+weather.forecast.simpleforecast.forecastday[0].high.celsius);
+                      console.log('F Low-------------'+weather.forecast.simpleforecast.forecastday[0].low.fahrenheit);
+                      console.log('C Low-------------'+weather.forecast.simpleforecast.forecastday[0].low.celsius);
+                      console.log('conditions-------------'+weather.forecast.txt_forecast.forecastday[0].fcttext);
+                      });
+                  });
               });
                 $.ajax({
                         dataType: "xml",
@@ -212,15 +225,5 @@ console.log('http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1
                              $('.sourceInfo').html("");
                              $('.sourceInfo').append(addressDetails);
                            }
-
-
-
-         });
-         }
-
-      //    function showNeighborhoodData(){
-      //    for (i=0; i<parsedResult.region.length; i++){
-      //    var neighborhoodList = $("<ul>").attr("class", "neighborhoodListItem");
-      //    neighborhoodList.html('<li>'+parsedResult.region[i].name+'</li>');
-      //    $(".sourceInfo").append(neighborhoodList);
-      //  }}
+                         });
+                       }
