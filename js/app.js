@@ -80,6 +80,8 @@
        var placesAddressFormatted = placesAddress.replace(/ /g, "+");
        console.log ("Address formatted " + placesAddressFormatted);
 
+       event.preventDefault();
+
 
      //api call to google
 
@@ -134,23 +136,9 @@
                              response1.results[0].address_components[stateIndex].long_name.replace(/ /g, "+")  + "+" +
                              response1.results[0].address_components[zipIndex].long_name;
            console.log("Here it is!!!! "+cityStateZip);
-           getZillowData(city, state);
-           //getZillowData(streetAddress, cityStateZip);
+           getZillowData(city, state, streetAddress, cityStateZip);
          });
   });
-// }
-// function doSomethingLater(fn, time ) {
-//   var dfd = $.Deferred();
-//
-//   setTimeout(function() {
-//     dfd.resolve( getGoogleData());
-//   }, time || 0);
-//
-//   return dfd.promise();
-// }
-//   var promise = doSomethingLater(getZillowData(), 5000);
-  // end of on-click
-
 
     function getZillowData(city, state, streetAddress, cityStateZip) {
     console.log(streetAddress)
@@ -160,7 +148,7 @@
              options.url = 'https://cors-anywhere.herokuapp.com/' + options.url;
          }
      });
-console.log('http://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood');
+//console.log('http://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood');
 //console.log('http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address='+streetAddress+'&citystatezip='+cityStateZip);
      $.ajax({
              dataType: "xml",
@@ -175,5 +163,18 @@ console.log('http://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZW
                 var parsedResult = jsonData["#document"]["RegionChildren:regionchildren"].response.list;
                 //var parsedResult = jsonData["#document"]["SearchResults:searchresults"].response.results.result;
                 console.log(parsedResult); //Look in console.
+                console.log(streetAddress, cityStateZip);
+                $.ajax({
+                        dataType: "xml",
+                        url: 'http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address='+streetAddress+'&citystatezip='+cityStateZip,
+                        method: "GET"
+                    })
+                    // After the data comes back from the API
+                    .done(function(response3) {
+                      console.log(response3);
+                      var jsonData2 = $.xml2json(response3);
+                           var parsedResult2 = jsonData2["#document"]["SearchResults:searchresults"].response.results.result;
+                           console.log(parsedResult2); //Look in console.
          });
-       };
+       });
+     };
