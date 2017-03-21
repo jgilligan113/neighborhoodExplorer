@@ -1,9 +1,24 @@
-//var input = "";
- //get map
- var placesAddress ='';
- var cityStateZip = "";
- var streetAddress = "";
+
+//init firebaseapp
+var config = {
+    apiKey: "AIzaSyASg1TVyLnJi2SgnqEGX0lqgy4vKY0ViYg",
+    authDomain: "neighborhoodexplorer-b82d5.firebaseapp.com",
+    databaseURL: "https://neighborhoodexplorer-b82d5.firebaseio.com",
+    storageBucket: "neighborhoodexplorer-b82d5.appspot.com",
+    messagingSenderId: "852891560151"
+  };
+  firebase.initializeApp(config);
+//global variables
+var database = firebase.database();
+var placesAddress ='';
+var cityStateZip = '';
+var city = '';
+var state = '';
+var streetAddress = '';
+
+//get map
  function initAutocomplete() {
+
          var map = new google.maps.Map(document.getElementById('map'), {
            center: {lat: 32.0812053, lng: -81.0934179},
            zoom: 13,
@@ -72,15 +87,14 @@
              }
            });
            map.fitBounds(bounds);
-
+           event.preventDefault();
          });
        }
        $(document).on('click', '#search', function getGoogleData(){
+       event.preventDefault();
        console.log("Address 1" + placesAddress);
        var placesAddressFormatted = placesAddress.replace(/ /g, "+");
        console.log ("Address formatted " + placesAddressFormatted);
-
-       event.preventDefault();
        $(".progress").css('display', 'block');
 
      //api call to google
@@ -136,15 +150,16 @@
                              response1.results[0].address_components[stateIndex].long_name.replace(/ /g, "+")  + "+" +
                              response1.results[0].address_components[zipIndex].long_name;
            console.log("Here it is!!!! "+cityStateZip);
-           getZillowData(city, state, streetAddress, cityStateZip);
 
+           getZillowData(city, state, streetAddress, cityStateZip);
          });
 //end of on-click for initial search parameters
   });
 
     function getZillowData(city, state, streetAddress, cityStateZip) {
     $('.sourceInfo').html("");
-    console.log(streetAddress)
+    console.log(streetAddress);
+    console.log()
 
      // Event listener for all button element
      $.ajaxPrefilter(function(options) {
@@ -172,9 +187,10 @@ console.log('http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/conditio
                 console.log(parsedResult.region[0].name);
 
                 $('#neighborhoods').on('click', function(){
+                     event.preventDefault();
                      $('.sourceInfo').html("");
                      var listDiv = $("<div>");
-                     listDiv.html('<h4>Neighborhood Details</h4><br><ul></ul>');
+                     listDiv.html('<h5>Neighborhoods of '+city+'</h5>');
                      for (i=0; i<parsedResult.region.length; i++){
                      var neighborhoodList = '<li>'+parsedResult.region[i].name+'</li>';
                      listDiv.append(neighborhoodList);
@@ -184,6 +200,7 @@ console.log('http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/conditio
                 });
 
                 $('#weather').on('click', function(){
+                event.preventDefault();
                 $.ajax({
                     url : 'http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/forecast/q/'+state+'/'+city+'.json',
                     method: 'GET'
@@ -209,21 +226,50 @@ console.log('http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/conditio
                            var parsedResultError = jsonData2["#document"]["SearchResults:searchresults"].message.text;
                            if (parsedResultError == 'Error: no exact match found for input address') {
                              alert("Error, no exact match for address");
+                             //var message = 'Sorry, there is not an exact match for the address';
+                              $('#modal1').modal('open');
+                              //$('.modal-content').find('p').text(message);
 
                            console.log(parsedResultError);
                          } else {
                            var parsedResult2 = jsonData2["#document"]["SearchResults:searchresults"].response.results.result;
 
                              console.log(parsedResult2);
+                             var streetAddress2 = parsedResult2.address.street;
+                             var city2 = parsedResult2.address.city;
+                             var state2 = parsedResult2.address.state;
+                             console.log(streetAddress);
                              var bedrooms = parsedResult2.bedrooms;
                              var bathrooms = parsedResult2.bathrooms;
                              var lastSold = parsedResult2.lastSoldPrice._;
                              var sqrFt = parsedResult2.finishedSqFt;
-                             var neighborhood = parsedResult2.localRealEstate.region.$.name;
+                             var neighborhood2 = parsedResult2.localRealEstate.region.$.name;
                              var addressDetails = $("<div>").attr("class", "addressDetails");
-                             addressDetails.html('<p><h4>Home Details</h4><br>Bedrooms: '+bedrooms+'<br>Bathrooms: '+bathrooms+'<br>Finished Square Feet: '+sqrFt+'<br>Last Sold for: $'+lastSold+'<br>Neighborhood: '+neighborhood+'</p>');//Look in console.
+                             addressDetails.html('<h5>Home Details</h5><p>Bedrooms: '+bedrooms+'<br>Bathrooms: '+bathrooms+'<br>Finished Square Feet: '+sqrFt+'<br>Last Sold for: $'+lastSold+'<br>Neighborhood: '+neighborhood+'</p>');//Look in console.
                              $('.sourceInfo').html("");
                              $('.sourceInfo').append(addressDetails);
+
+                             database.ref().push({
+
+                                streetAddress2 : streetAddress,
+                                city2 : city,
+                                state2 : state,
+                                neighborhood2 : neighborhood
+                               });
+                               
+                              database.ref().on("child_added", function(childSnapshot){
+                               var obj = childSnapshot.val();
+                                console.log(obj);
+                                $('#myTable tr:last').after('<tr><td>'+ obj.streetAddress +'</td><td>'+ obj.city +'</td><td>'+ obj.state +'</td><td>'+ obj.region +'</td>');
+                              }, function(errorObject) {
+                                console.log("The read failed: " + errorObject.code);
+                              });
                            }
                          });
                        }
+                       //Allow the modal to be triggered
+                         $(document).ready(function(){
+                           // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+                           $('.modal').modal();
+                           // $('#noMatch').hide();
+                         });
