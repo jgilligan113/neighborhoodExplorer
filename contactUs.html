@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>neighborhood explorer</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.7.2/firebase.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm1RMUd3GGzW25X_Vl463MG-qlQ_CEkQg&libraries=places&callback=initAutocomplete"
+         async defer></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+  <script src="xml2json.js"></script>
+  <!-- Javascript file -->
+  <script src="js/app.js"></script>
+
+</head>
+<body>
+  <nav class="light-green darken-1" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="home.html" class="brand-logo"><i class="material-icons">person_pin</i>neighborhood explorer</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="contactUs.html">contact</a></li>
+        <li><a href="#">faq</a></li>
+
+      </ul>
+
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="contactUs.html">contact</a></li>
+        <li><a href="#">faq</a></li>
+
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <h1 class="header center blue-grey-text">start exploring</h1>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="section">
+      <div class="row">
+        <div class="col s2"></div>
+        <form class="col s8">
+          <!--enter Contact us form-->
+          <div class="row">
+            <div class="input-field col s6">
+              <input id="first_name" type="text" class="validate">
+              <label for="first_name">First Name</label>
+            </div>
+            <div class="input-field col s6">
+              <input id="last_name" type="text" class="validate">
+              <label for="last_name">Last Name</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <input id="email" type="email" class="validate">
+              <label for="email" data-error="please enter a valid email" data-success="right">Email</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <textarea id="comment" class="materialize-textarea"></textarea>
+              <label for="textarea1">Comment</label>
+            </div>
+          </div>
+          <div class="row">
+            <button class="btn waves-effect waves-light light-green lighten-1" type="submit" name="action">Submit
+              <i class="material-icons right">send</i>
+            </button>
+          </div>
+        </form>
+        <div class="col s2"></div>
+      </div>
+    </div>
+  </div>
+
+
+  <footer class="page-footer blue-grey lighten-2">
+    <div class="container">
+      <div class="row">
+        <div class="col s12">
+          <h5 class="white-text">Company Bio</h5>
+          <p class="grey-text text-lighten-4">We are a team of developers looking to do something awesome.  We hope you like it and find it's use value.</p>
+
+
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12">
+          <ul>
+            <li><a class="white-text" href="contactUs.html">contact</a></li>
+            <li><a class="white-text" href="#!">faq</a></li>
+
+          </ul>
+        </div>
+
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+      &#169; Copyright 2017 <a class="light-green-text text-lighten-4" href="#">Cooing Whales</a>
+      </div>
+    </div>
+  </footer>
+
+  </body>
+</html>
