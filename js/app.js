@@ -8,6 +8,7 @@ var config = {
     messagingSenderId: "852891560151"
   };
   firebase.initializeApp(config);
+
 //global variables
 
 var placesAddress ='';
@@ -20,7 +21,7 @@ var database = firebase.database();
 database.ref().on("child_added", function(childSnapshot){
  var obj = childSnapshot.val();
   console.log(obj);
-  $('#myTable tr:last').after('<tr><td>'+ obj.streetAddress2 +'</td><td>'+ obj.city2 +'</td><td>'+ obj.state2 +'</td><td>'+ obj.neighborhood2+'</td>');
+  $('#myTable thead:last').after('<tr><td>'+ obj.streetAddress2 +'</td><td>'+ obj.city2 +'</td><td>'+ obj.state2 +'</td><td>'+ obj.neighborhood2+'</td>');
 }, function(errorObject) {
   console.log("The read failed: " + errorObject.code);
 });
@@ -209,6 +210,7 @@ console.log('http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/conditio
 
                 $('#weather').on('click', function(){
                 event.preventDefault();
+
                 $.ajax({
                     url : 'http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/forecast/q/'+state+'/'+city+'.json',
                     method: 'GET'
@@ -218,7 +220,13 @@ console.log('http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/conditio
                       console.log('F Low-------------'+weather.forecast.simpleforecast.forecastday[0].low.fahrenheit);
                       console.log('C Low-------------'+weather.forecast.simpleforecast.forecastday[0].low.celsius);
                       console.log('conditions-------------'+weather.forecast.txt_forecast.forecastday[0].fcttext);
+                      $('#city').text(city);
+                      $('#high').text(weather.forecast.simpleforecast.forecastday[0].high.fahrenheit);
+                      $('#low').text(weather.forecast.simpleforecast.forecastday[0].low.fahrenheit);
+                      $('#conditions').text(weather.forecast.txt_forecast.forecastday[0].fcttext);
+                      $('#modal2').modal('open');
                       });
+
                   });
               });
                 $.ajax({
@@ -252,9 +260,13 @@ console.log('http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/conditio
                              var lastSold = parsedResult2.lastSoldPrice._;
                              var sqrFt = parsedResult2.finishedSqFt;
                              var neighborhood2 = parsedResult2.localRealEstate.region.$.name;
+                             var comps = parsedResult2.links.comparables;
+                             var data = parsedResult2.links.graphsanddata;
+                             var details = parsedResult2.links.homedetails;
+                             var map = parsedResult2.links.mapthishome;
                              console.log(neighborhood2);
                              var addressDetails = $("<div>").attr("class", "addressDetails");
-                             addressDetails.html('<h5>Home Details</h5><p>Bedrooms: '+bedrooms+'<br>Bathrooms: '+bathrooms+'<br>Finished Square Feet: '+sqrFt+'<br>Last Sold for: $'+lastSold+'<br>Neighborhood: '+neighborhood+'</p>');//Look in console.
+                             addressDetails.html('<h5>Home Details</h5><p>Bedrooms: '+bedrooms+'<br>Bathrooms: '+bathrooms+'<br>Finished Square Feet: '+sqrFt+'<br>Last Sold for: $'+lastSold+'<br>Neighborhood: '+neighborhood2+'</p>');
                              $('.sourceInfo').html("");
                              $('.sourceInfo').append(addressDetails);
 
@@ -271,9 +283,9 @@ console.log('http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/conditio
                            }
                          });
                        }
-                       //Allow the modal to be triggered
-                         $(document).ready(function(){
-                           // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
-                           $('.modal').modal();
-                           // $('#noMatch').hide();
-                         });
+//Allow the modal to be triggered
+$(document).ready(function(){
+// the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+  $('.modal').modal();
+// $('#noMatch').hide();
+  });
