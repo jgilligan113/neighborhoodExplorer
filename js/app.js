@@ -9,13 +9,21 @@ var config = {
   };
   firebase.initializeApp(config);
 //global variables
-var database = firebase.database();
+
 var placesAddress ='';
 var cityStateZip = '';
 var city = '';
 var state = '';
 var streetAddress = '';
-
+var neighborhood = '';
+var database = firebase.database();
+database.ref().on("child_added", function(childSnapshot){
+ var obj = childSnapshot.val();
+  console.log(obj);
+  $('#myTable tr:last').after('<tr><td>'+ obj.streetAddress2 +'</td><td>'+ obj.city2 +'</td><td>'+ obj.state2 +'</td><td>'+ obj.neighborhood2+'</td>');
+}, function(errorObject) {
+  console.log("The read failed: " + errorObject.code);
+});
 //get map
  function initAutocomplete() {
 
@@ -244,26 +252,22 @@ console.log('http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/conditio
                              var lastSold = parsedResult2.lastSoldPrice._;
                              var sqrFt = parsedResult2.finishedSqFt;
                              var neighborhood2 = parsedResult2.localRealEstate.region.$.name;
+                             console.log(neighborhood2);
                              var addressDetails = $("<div>").attr("class", "addressDetails");
                              addressDetails.html('<h5>Home Details</h5><p>Bedrooms: '+bedrooms+'<br>Bathrooms: '+bathrooms+'<br>Finished Square Feet: '+sqrFt+'<br>Last Sold for: $'+lastSold+'<br>Neighborhood: '+neighborhood+'</p>');//Look in console.
                              $('.sourceInfo').html("");
                              $('.sourceInfo').append(addressDetails);
 
                              database.ref().push({
+                                streetAddress2 : streetAddress2,
+                                city2 : city2,
+                                state2 : state2,
+                                neighborhood2 : neighborhood2,
+                                dateAdded : firebase.database.ServerValue.TIMESTAMP
 
-                                streetAddress2 : streetAddress,
-                                city2 : city,
-                                state2 : state,
-                                neighborhood2 : neighborhood
                                });
-                               
-                              database.ref().on("child_added", function(childSnapshot){
-                               var obj = childSnapshot.val();
-                                console.log(obj);
-                                $('#myTable tr:last').after('<tr><td>'+ obj.streetAddress +'</td><td>'+ obj.city +'</td><td>'+ obj.state +'</td><td>'+ obj.region +'</td>');
-                              }, function(errorObject) {
-                                console.log("The read failed: " + errorObject.code);
-                              });
+
+
                            }
                          });
                        }
