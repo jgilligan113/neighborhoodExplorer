@@ -36,14 +36,14 @@ database.ref().on("child_added", function(childSnapshot){
 
          // Create the search box and link it to the UI element.
          var input = document.getElementById('pac-input');
-         console.log(input);
+         //console.log(input);
          var searchBox = new google.maps.places.SearchBox(input);
          //map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
          // Bias the SearchBox results towards current map's viewport.
          map.addListener('bounds_changed', function() {
            searchBox.setBounds(map.getBounds());
-           console.log("singh-----------"+map.getBounds());
+           //console.log("singh-----------"+map.getBounds());
          });
 
          var markers = [];
@@ -53,6 +53,8 @@ database.ref().on("child_added", function(childSnapshot){
            var places = searchBox.getPlaces();
            placesAddress = places[0].formatted_address;
            console.log(placesAddress);
+           test111(placesAddress);
+
 
            if (places.length == 0) {
              return;
@@ -99,8 +101,10 @@ database.ref().on("child_added", function(childSnapshot){
            event.preventDefault();
          });
        }
-       $(document).on('click', '#search', function getGoogleData(){
-       event.preventDefault();
+       //$(document).on('click', '#search', function getGoogleData(){
+       function test111(placesAddress){
+        console.log("inside test finction");
+       //event.preventDefault();
        console.log("Address 1" + placesAddress);
        var placesAddressFormatted = placesAddress.replace(/ /g, "+");
        console.log ("Address formatted " + placesAddressFormatted);
@@ -163,7 +167,8 @@ database.ref().on("child_added", function(childSnapshot){
            getZillowData(city, state, streetAddress, cityStateZip);
          });
 //end of on-click for initial search parameters
-  });
+  //});
+}
 
     function getZillowData(city, state, streetAddress, cityStateZip) {
     $('.sourceInfo').html("");
