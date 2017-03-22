@@ -106,39 +106,46 @@ database.ref().on("child_added", function(childSnapshot){
        //event.preventDefault();
        //console.log("Address 1" + placesAddress);
        var placesAddressFormatted = placesAddress.replace(/ /g, "+");
-       //console.log ("Address formatted " + placesAddressFormatted);
+       console.log ("Address formatted " + placesAddressFormatted);
        $(".progress").css('display', 'block');
+
 
      //api call to google
 
       var queryURLGoogle = 'https://maps.googleapis.com/maps/api/geocode/json?address='+ placesAddressFormatted +'&key=AIzaSyCm1RMUd3GGzW25X_Vl463MG-qlQ_CEkQg';
-      //console.log(queryURLGoogle);
-
-
+      console.log(queryURLGoogle);
 
       var myAjaxCall = $.ajax({
             url: queryURLGoogle,
               method: "GET"
          })
          .done(function(response1) {
-           //console.log(response1);
+           console.log(response1);
 //look thru object to find city, state and zip array index value
 
            for (i = 0; i < response1.results[0].address_components.length; i++ ) {
+             if (response1.results[0].address_components[i].types[0] == "street_number") {
+               var streetNoIndex = i;
+               console.log("This is the street no: "+streetNoIndex);
+             }
+             else if (response1.results[0].address_components[i].types[0] == "route") {
+               var routeIndex = i;
+               console.log("This is the street: "+routeIndex);
+             }
 
-              if (response1.results[0].address_components[i].types[0] == "locality") {
+              else if (response1.results[0].address_components[i].types[0] == "locality") {
                 var cityIndex = i;
-                //console.log(cityIndex);
+                console.log("THis is the city: " +cityIndex);
               }
                 else if
                   (response1.results[0].address_components[i].types[0] == "administrative_area_level_1") {
                     var stateIndex = i;
-                    //console.log(stateIndex);
+                    console.log("This is the state: "+stateIndex);
                   }
                   else if
                     (response1.results[0].address_components[i].types[0] == "postal_code") {
                       var zipIndex = i;
-                      //console.log(zipIndex);
+                      console.log("This is the zipcode: "+zipIndex);
                     }
 
                else { console.log("I can't find it")};
@@ -150,26 +157,53 @@ database.ref().on("child_added", function(childSnapshot){
            //console.log(response1.results[0].address_components[cityIndex].long_name);
            //console.log(response1.results[0].address_components[stateIndex].long_name);
            //console.log(response1.results[0].address_components[zipIndex].long_name);
+           if (streetNoIndex > -1 && routeIndex > -1) {
+           var streetAddress = response1.results[0].address_components[streetNoIndex].long_name + "+" +
+                               response1.results[0].address_components[routeIndex].long_name.replace(/ /g, "+");
+           console.log(streetAddress);
+         } else {
+           console.log("Ain't no street in here.");
 
-           var streetAddress = response1.results[0].address_components[0].long_name + "+" +
-                               response1.results[0].address_components[1].long_name.replace(/ /g, "+");
-           //console.log(streetAddress);
-
+         }
+         if (cityIndex > -1 ) {
            var city = response1.results[0].address_components[cityIndex].long_name;
-           var state = response1.results[0].address_components[stateIndex].long_name;
+         } else {console.log("no city");}
 
+         if (stateIndex > -1 ) {
+           var state = response1.results[0].address_components[stateIndex].long_name;
+         } else {console.log("no state");
+
+       }
+           if (zipIndex > -1 ) {
+           var zip =  response1.results[0].address_components[zipIndex].long_name;
+         } else {console.log("no zip");}
+
+         if (cityIndex > -1 && stateIndex > -1) {
+           getZillowData1(city, state);
+         } else {console.log("can't run the zillow1 wiffout this stuff we need.");
+                  $('#modal1').modal('open');
+       }
+
+
+           if (cityIndex > -1 && stateIndex > -1 && zipIndex > -1 ) {
            var cityStateZip = response1.results[0].address_components[cityIndex].long_name.replace(/ /g, "+")  + "+" +
                              response1.results[0].address_components[stateIndex].long_name.replace(/ /g, "+")  + "+" +
                              response1.results[0].address_components[zipIndex].long_name;
-           //console.log("Here it is!!!! "+cityStateZip);
+           console.log("Here it is!!!! "+cityStateZip);
 
-           getZillowData(city, state, streetAddress, cityStateZip);
+
+           getZillowData2(city, state, streetAddress, cityStateZip);
+
+         } else {console.log ("Something is missing here!");
+                $('#modal1').modal('open');
+       }
+
          });
 //end of on-click for initial search parameters
   //});
 }
 
-    function getZillowData(city, state, streetAddress, cityStateZip) {
+    function getZillowData2(city, state, streetAddress, cityStateZip) {
     $('.sourceInfo').html("");
     //console.log(streetAddress);
     //console.log()
@@ -287,6 +321,87 @@ database.ref().on("child_added", function(childSnapshot){
                            }
                          });
                        }
+
+function getZillowData1(city, state) {
+$('.sourceInfo').html("");
+//console.log(streetAddress);
+//console.log()
+
+// Event listener for all button element
+$.ajaxPrefilter(function(options) {
+if (options.crossDomain && jQuery.support.cors) {
+    options.url = 'https://cors-anywhere.herokuapp.com/' + options.url;
+}
+});
+//console.log('http://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood');
+//console.log('http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address='+streetAddress+'&citystatezip='+cityStateZip);
+//console.log('http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/conditions/q/'+state+'/'+city+'.json');
+
+//get list of neighborhoods for address entered using api call to zillow using Region Children url
+$.ajax({
+    dataType: "xml",
+    url: 'http://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood',
+    method: "GET"
+})
+// After the data comes back from the API
+.done(function(response2) {
+  //console.log(response2);
+  var jsonData = $.xml2json(response2);
+  console.log(response2);
+       var parsedResult = jsonData["#document"]["RegionChildren:regionchildren"];
+       console.log(parsedResult);
+       //console.log(parsedResult); //Look in console.
+       //console.log(streetAddress, cityStateZip);
+       //console.log(parsedResult.region[0].name);
+
+       $('#neighborhoods').on('click', function(){
+            event.preventDefault();
+            $('.sourceInfo').html("");
+            var listDiv = $("<div>");
+            listDiv.html('<h5>Neighborhoods of '+city+'</h5>');
+            for (i=0; i<parsedResult.region.length; i++){
+            var neighborhoodList = '<li>'+parsedResult.region[i].name+'</li>';
+            listDiv.append(neighborhoodList);
+            $('.sourceInfo').html(listDiv)
+            //console.log(neighborhoodList);
+          }
+       });
+
+       $('#weather').on('click', function(){
+       event.preventDefault();
+
+       $.ajax({
+           url : 'http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/forecast/q/'+state+'/'+city+'.json',
+           method: 'GET'
+           }).done(function (weather){
+             //console.log('F High------------'+weather.forecast.simpleforecast.forecastday[0].high.fahrenheit);
+             //console.log('C High------------'+weather.forecast.simpleforecast.forecastday[0].high.celsius);
+             //console.log('F Low-------------'+weather.forecast.simpleforecast.forecastday[0].low.fahrenheit);
+             //console.log('C Low-------------'+weather.forecast.simpleforecast.forecastday[0].low.celsius);
+             //console.log('conditions-------------'+weather.forecast.txt_forecast.forecastday[0].fcttext);
+             $('#city').text(city);
+             $('#high').text(weather.forecast.simpleforecast.forecastday[0].high.fahrenheit);
+             $('#low').text(weather.forecast.simpleforecast.forecastday[0].low.fahrenheit);
+             $('#conditions').text(weather.forecast.txt_forecast.forecastday[0].fcttext);
+             $('#modal2').modal('open');
+             });
+
+         });
+
+
+                    database.ref().push({
+
+                       city2 : city2,
+                       state2 : state2,
+                      
+                       dateAdded : firebase.database.ServerValue.TIMESTAMP
+
+                      });
+
+
+                  });
+                }
+
 //Allow the modal to be triggered
 $(document).ready(function(){
 // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
