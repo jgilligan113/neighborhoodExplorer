@@ -348,8 +348,9 @@ $.ajax({
   //console.log(response2);
   var jsonData = $.xml2json(response2);
   console.log(response2);
-       var parsedResult = jsonData["#document"]["RegionChildren:regionchildren"];
+       var parsedResult = jsonData["#document"]["RegionChildren:regionchildren"].response.list;
        console.log(parsedResult);
+       $(".progress").css('display', 'none');
        //console.log(parsedResult); //Look in console.
        //console.log(streetAddress, cityStateZip);
        //console.log(parsedResult.region[0].name);
@@ -391,9 +392,9 @@ $.ajax({
 
                     database.ref().push({
 
-                       city2 : city2,
-                       state2 : state2,
-                      
+                       city2 : city,
+                       state2 : state,
+
                        dateAdded : firebase.database.ServerValue.TIMESTAMP
 
                       });
