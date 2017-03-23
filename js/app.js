@@ -198,10 +198,31 @@ database.ref().on("child_added", function(childSnapshot){
                 $('#modal1').modal('open');
        }
 
-         });
+       $('#weather').on('click', function() {
+           $.ajax({
+             url : 'http://api.wunderground.com/api/2d160d5a7d89cd60/forecast10day/q/'+state+'/'+city+'.json',
+             method: 'GET'
+             }).done(function (weather){
+               for (i=0; i<5; i++) {
+               var weatherF = weather.forecast.txt_forecast.forecastday[i].fcttext;
+               var altTxt = weather.forecast.txt_forecast.forecastday[i].icon;
+               var image = weather.forecast.txt_forecast.forecastday[i].icon_url;
+               var day = weather.forecast.txt_forecast.forecastday[i].title;
+               $('#city').text(city);
+               var icon = $('<img>').attr('src', image);
+               icon.attr('alt', altTxt);
+               var details = $('<div>').html('<h6>'+day+'</h6><p>'+weatherF+'</p>');
+               $('.weatherDetails').append(icon, details);
+             }
+               $('#modal2').modal('open');
+               });
+           });
+       });
+
+         };
 //end of on-click for initial search parameters
   //});
-}
+
 
     function getZillowData2(city, state, streetAddress, cityStateZip) {
     $('.sourceInfo').html("");
@@ -246,26 +267,6 @@ database.ref().on("child_added", function(childSnapshot){
                    }
                 });
 
-                $('#weather').on('click', function(){
-                event.preventDefault();
-
-                $.ajax({
-                    url : 'http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/forecast/q/'+state+'/'+city+'.json',
-                    method: 'GET'
-                    }).done(function (weather){
-                      //console.log('F High------------'+weather.forecast.simpleforecast.forecastday[0].high.fahrenheit);
-                      //console.log('C High------------'+weather.forecast.simpleforecast.forecastday[0].high.celsius);
-                      //console.log('F Low-------------'+weather.forecast.simpleforecast.forecastday[0].low.fahrenheit);
-                      //console.log('C Low-------------'+weather.forecast.simpleforecast.forecastday[0].low.celsius);
-                      //console.log('conditions-------------'+weather.forecast.txt_forecast.forecastday[0].fcttext);
-                      $('#city').text(city);
-                      $('#high').text(weather.forecast.simpleforecast.forecastday[0].high.fahrenheit);
-                      $('#low').text(weather.forecast.simpleforecast.forecastday[0].low.fahrenheit);
-                      $('#conditions').text(weather.forecast.txt_forecast.forecastday[0].fcttext);
-                      $('#modal2').modal('open');
-                      });
-
-                  });
               });
                 $.ajax({
                         dataType: "xml",
@@ -307,6 +308,13 @@ database.ref().on("child_added", function(childSnapshot){
                              addressDetails.html('<h5>Home Details</h5><p>Bedrooms: '+bedrooms+'<br>Bathrooms: '+bathrooms+'<br>Finished Square Feet: '+sqrFt+'<br>Last Sold for: $'+lastSold+'<br>Neighborhood: '+neighborhood2+'</p>');
                              $('.sourceInfo').html("");
                              $('.sourceInfo').append(addressDetails);
+                             $('#homesForSale').on('click', function(){
+                               var links = $('<div>').html(
+                                 '<h5>Courtesy of Zillow</h5><a href="'+comps+'target="_blank">Home Comps</a><br><a href="'+data+'target="_blank">Area Graphs and Data</a><br><a href="'+details+'target="_blank">Additional Details</a><br><a href="'+map+'target="_blank">Map this home</a><br><img src="http://www.zillow.com/widgets/GetVersionedResource.htm?path=/static/logos/Zillowlogo_200x50.gif" alt="Zillow Real Estate Search" id="yui_3_18_1_1_1490097105280_373" height="50" width="200">'
+                              );
+                                $('.sourceInfo').empty();
+                                $('.sourceInfo').append(links);
+                             });
 
                              database.ref().push({
                                 streetAddress2 : streetAddress2,
@@ -368,26 +376,7 @@ $.ajax({
           }
        });
 
-       $('#weather').on('click', function(){
-       event.preventDefault();
 
-       $.ajax({
-           url : 'http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/forecast/q/'+state+'/'+city+'.json',
-           method: 'GET'
-           }).done(function (weather){
-             //console.log('F High------------'+weather.forecast.simpleforecast.forecastday[0].high.fahrenheit);
-             //console.log('C High------------'+weather.forecast.simpleforecast.forecastday[0].high.celsius);
-             //console.log('F Low-------------'+weather.forecast.simpleforecast.forecastday[0].low.fahrenheit);
-             //console.log('C Low-------------'+weather.forecast.simpleforecast.forecastday[0].low.celsius);
-             //console.log('conditions-------------'+weather.forecast.txt_forecast.forecastday[0].fcttext);
-             $('#city').text(city);
-             $('#high').text(weather.forecast.simpleforecast.forecastday[0].high.fahrenheit);
-             $('#low').text(weather.forecast.simpleforecast.forecastday[0].low.fahrenheit);
-             $('#conditions').text(weather.forecast.txt_forecast.forecastday[0].fcttext);
-             $('#modal2').modal('open');
-             });
-
-         });
 
 
                     database.ref().push({
