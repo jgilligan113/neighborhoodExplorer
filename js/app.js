@@ -24,6 +24,14 @@ database.ref().on("child_added", function(childSnapshot){
 }, function(errorObject) {
   console.log("The read failed: " + errorObject.code);
 });
+// // Call to limit to the last 10 searches
+// database.ref().orderByChild('dateAdded').limitToLast(10).on('child_added', function(childSnapshot1){
+//   var obj1 = childSnapshot1.val();
+//   console.log(obj1);
+//   $('#myTable thead:last').after('<tr><td>'+ obj.streetAddress2 +'</td><td>'+ obj.city2 +'</td><td>'+ obj.state2 +'</td><td>'+ obj.neighborhood2+'</td>');
+// }, function(errorObject) {
+//   console.log("The read failed: " + errorObject.code);
+// });
 //get map
  function initAutocomplete() {
 
@@ -181,7 +189,10 @@ database.ref().on("child_added", function(childSnapshot){
          if (cityIndex > -1 && stateIndex > -1) {
            getZillowData1(city, state);
          } else {console.log("can't run the zillow1 wiffout this stuff we need.");
-                  $('#modal1').modal('open');
+
+                  $(".progress").css('display', 'none');
+                  $('#modal3').modal('open');
+                  return;
        }
 
 
@@ -222,7 +233,6 @@ database.ref().on("child_added", function(childSnapshot){
          };
 //end of on-click for initial search parameters
   //});
-
 
     function getZillowData2(city, state, streetAddress, cityStateZip) {
     $('.sourceInfo').html("");
