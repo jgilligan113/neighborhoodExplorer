@@ -189,6 +189,7 @@ database.ref().on("child_added", function(childSnapshot){
          if (cityIndex > -1 && stateIndex > -1) {
            getZillowData1(city, state);
          } else {console.log("can't run the zillow1 wiffout this stuff we need.");
+
                   $(".progress").css('display', 'none');
                   $('#modal3').modal('open');
                   return;
@@ -232,7 +233,6 @@ database.ref().on("child_added", function(childSnapshot){
          };
 //end of on-click for initial search parameters
   //});
-
 
     function getZillowData2(city, state, streetAddress, cityStateZip) {
     $('.sourceInfo').html("");
