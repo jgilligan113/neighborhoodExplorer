@@ -2723,7 +2723,7 @@ video.responsive-video {
 .breadcrumb i.material-icons {
   display: inline-block;
   float: left;
-  font-size: 24px;
+  font-size: 48px;
 }
 
 .breadcrumb:before {
@@ -3339,6 +3339,7 @@ nav ul a span.badge {
 
 /* This is needed for some mobile phones to display the Google Icon font properly */
 .material-icons {
+  font-size: 48px;
   text-rendering: optimizeLegibility;
   -webkit-font-feature-settings: 'liga';
      -moz-font-feature-settings: 'liga';
@@ -4974,7 +4975,7 @@ small {
 .btn-floating i,
 .btn-large i,
 .btn-flat i {
-  font-size: 1.3rem;
+  font-size: 36px;
   line-height: inherit;
 }
 
@@ -5199,7 +5200,7 @@ button.btn-floating {
 }
 
 .btn-large i {
-  font-size: 1.6rem;
+  font-size: 36px;
 }
 
 .btn-block {

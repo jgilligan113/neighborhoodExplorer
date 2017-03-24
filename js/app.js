@@ -9,7 +9,6 @@ var config = {
   firebase.initializeApp(config);
 
 //global variables
-
 var placesAddress ='';
 var cityStateZip = '';
 var city = '';
@@ -17,25 +16,28 @@ var state = '';
 var streetAddress = '';
 var neighborhood = '';
 var database = firebase.database();
-database.ref().on("child_added", function(childSnapshot){
- var obj = childSnapshot.val();
-  //console.log(obj);
-  $('#myTable thead:last').after('<tr><td>'+ obj.streetAddress2 +'</td><td>'+ obj.city2 +'</td><td>'+ obj.state2 +'</td><td>'+ obj.neighborhood2+'</td>');
-}, function(errorObject) {
-  console.log("The read failed: " + errorObject.code);
-});
-// // Call to limit to the last 10 searches
-// database.ref().orderByChild('dateAdded').limitToLast(10).on('child_added', function(childSnapshot1){
-//   var obj1 = childSnapshot1.val();
-//   console.log(obj1);
+//populate recent searches from firebase
+// database.ref().on("child_added", function(childSnapshot){
+//  var obj = childSnapshot.val();
+//   //build the recent searches table
 //   $('#myTable thead:last').after('<tr><td>'+ obj.streetAddress2 +'</td><td>'+ obj.city2 +'</td><td>'+ obj.state2 +'</td><td>'+ obj.neighborhood2+'</td>');
 // }, function(errorObject) {
 //   console.log("The read failed: " + errorObject.code);
 // });
-//get map
+//populate recent searches from firebase and limit to the last 10 searches
+database.ref().orderByChild('dateAdded').limitToLast(10).on('child_added', function(childSnapshot1){
+  var obj = childSnapshot1.val();
+// console.log(obj1);
+// build the recent searches table
+  $('#myTable thead:last').after('<tr><td>'+ obj.streetAddress2 +'</td><td>'+ obj.city2 +'</td><td>'+ obj.state2 +'</td><td>'+ obj.neighborhood2+'</td>');
+}, function(errorObject) {
+  console.log("The read failed: " + errorObject.code);
+});
+//get initial autocomplete functionality on seach and produce google map of input
  function initAutocomplete() {
-
+         //create map variable and places map in the div with id 'map'
          var map = new google.maps.Map(document.getElementById('map'), {
+           //changed to center map on Savannah
            center: {lat: 32.0812053, lng: -81.0934179},
            zoom: 13,
            mapTypeId: 'roadmap'
@@ -60,13 +62,11 @@ database.ref().on("child_added", function(childSnapshot){
            var places = searchBox.getPlaces();
            placesAddress = places[0].formatted_address;
            //console.log(placesAddress);
-           test111(placesAddress);
-
+           getGoogleGeo(placesAddress);
 
            if (places.length == 0) {
              return;
            }
-
            // Clear out the old markers.
            markers.forEach(function(marker) {
              marker.setMap(null);
@@ -109,8 +109,8 @@ database.ref().on("child_added", function(childSnapshot){
          });
        }
        //$(document).on('click', '#search', function getGoogleData(){
-       function test111(placesAddress){
-        //console.log("inside test finction");
+       function getGoogleGeo(placesAddress){
+       //console.log("inside test function");
        //event.preventDefault();
        //console.log("Address 1" + placesAddress);
        var placesAddressFormatted = placesAddress.replace(/ /g, "+");
@@ -119,7 +119,6 @@ database.ref().on("child_added", function(childSnapshot){
 
 
      //api call to google
-
       var queryURLGoogle = 'https://maps.googleapis.com/maps/api/geocode/json?address='+ placesAddressFormatted +'&key=AIzaSyCm1RMUd3GGzW25X_Vl463MG-qlQ_CEkQg';
       console.log(queryURLGoogle);
 
@@ -143,7 +142,7 @@ database.ref().on("child_added", function(childSnapshot){
 
               else if (response1.results[0].address_components[i].types[0] == "locality") {
                 var cityIndex = i;
-                console.log("THis is the city: " +cityIndex);
+                console.log("This is the city: " +cityIndex);
               }
                 else if
                   (response1.results[0].address_components[i].types[0] == "administrative_area_level_1") {
@@ -155,7 +154,6 @@ database.ref().on("child_added", function(childSnapshot){
                       var zipIndex = i;
                       console.log("This is the zipcode: "+zipIndex);
                     }
-
                else { console.log("I can't find it")};
 
            };
@@ -191,10 +189,10 @@ database.ref().on("child_added", function(childSnapshot){
          } else {console.log("can't run the zillow1 wiffout this stuff we need.");
 
                   $(".progress").css('display', 'none');
+                  $("#homesForSale").addClass("disabled");
                   $('#modal3').modal('open');
                   return;
        }
-
 
            if (cityIndex > -1 && stateIndex > -1 && zipIndex > -1 ) {
            var cityStateZip = response1.results[0].address_components[cityIndex].long_name.replace(/ /g, "+")  + "+" +
@@ -206,6 +204,7 @@ database.ref().on("child_added", function(childSnapshot){
            getZillowData2(city, state, streetAddress, cityStateZip);
 
          } else {console.log ("Something is missing here!");
+                $("#homesForSale").addClass("disabled");
                 $('#modal1').modal('open');
        }
 
@@ -219,6 +218,8 @@ database.ref().on("child_added", function(childSnapshot){
                var altTxt = weather.forecast.txt_forecast.forecastday[i].icon;
                var image = weather.forecast.txt_forecast.forecastday[i].icon_url;
                var day = weather.forecast.txt_forecast.forecastday[i].title;
+
+               //add to the modal
                $('#city').text(city);
                var icon = $('<img>').attr('src', image);
                icon.attr('alt', altTxt);
@@ -232,12 +233,11 @@ database.ref().on("child_added", function(childSnapshot){
 
          };
 //end of on-click for initial search parameters
-  //});
 
     function getZillowData2(city, state, streetAddress, cityStateZip) {
     $('.sourceInfo').html("");
     //console.log(streetAddress);
-    //console.log()
+
 
      // Event listener for all button element
      $.ajaxPrefilter(function(options) {
@@ -246,7 +246,7 @@ database.ref().on("child_added", function(childSnapshot){
          }
      });
 //console.log('http://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood');
-//console.log('http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address='+streetAddress+'&citystatezip='+cityStateZip);
+console.log('http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address='+streetAddress+'&citystatezip='+cityStateZip);
 //console.log('http://api.wunderground.com/api/2d160d5a7d89cd60/geolookup/conditions/q/'+state+'/'+city+'.json');
 
 //get list of neighborhoods for address entered using api call to zillow using Region Children url
@@ -260,9 +260,7 @@ database.ref().on("child_added", function(childSnapshot){
            //console.log(response2);
            var jsonData = $.xml2json(response2);
                 var parsedResult = jsonData["#document"]["RegionChildren:regionchildren"].response.list;
-                //console.log(parsedResult); //Look in console.
-                //console.log(streetAddress, cityStateZip);
-                //console.log(parsedResult.region[0].name);
+                //console.log(parsedResult);
 
                 $('#neighborhoods').on('click', function(){
                      event.preventDefault();
@@ -290,7 +288,6 @@ database.ref().on("child_added", function(childSnapshot){
                       var jsonData2 = $.xml2json(response3);
                            var parsedResultError = jsonData2["#document"]["SearchResults:searchresults"].message.text;
                            if (parsedResultError == 'Error: no exact match found for input address') {
-                             alert("Error, no exact match for address");
                              //var message = 'Sorry, there is not an exact match for the address';
                               $('#modal1').modal('open');
                               //$('.modal-content').find('p').text(message);
@@ -306,8 +303,18 @@ database.ref().on("child_added", function(childSnapshot){
                              //console.log(streetAddress);
                              var bedrooms = parsedResult2.bedrooms;
                              var bathrooms = parsedResult2.bathrooms;
-                             var lastSold = parsedResult2.lastSoldPrice._;
-                             var sqrFt = parsedResult2.finishedSqFt;
+                             console.log(parsedResult2.lastSoldPrice);
+                             console.log(parsedResult2);
+                             var lastSold = '--';
+                             if (typeof parsedResult2.lastSoldPrice !== 'undefined'){
+                               lastSold = parsedResult2.lastSoldPrice._;
+                             }
+
+                             var sqrFt ='--';
+                             if (typeof parsedResult2.finishedSqFt !== 'undefined'){
+                               sqrFt = parsedResult2.finishedSqFt
+                             }
+
                              var neighborhood2 = parsedResult2.localRealEstate.region.$.name;
                              var comps = parsedResult2.links.comparables;
                              var data = parsedResult2.links.graphsanddata;
@@ -320,7 +327,7 @@ database.ref().on("child_added", function(childSnapshot){
                              $('.sourceInfo').append(addressDetails);
                              $('#homesForSale').on('click', function(){
                                var links = $('<div>').html(
-                                 '<h5>Courtesy of Zillow</h5><a href="'+comps+'target="_blank">Home Comps</a><br><a href="'+data+'target="_blank">Area Graphs and Data</a><br><a href="'+details+'target="_blank">Additional Details</a><br><a href="'+map+'target="_blank">Map this home</a><br><img src="http://www.zillow.com/widgets/GetVersionedResource.htm?path=/static/logos/Zillowlogo_200x50.gif" alt="Zillow Real Estate Search" id="yui_3_18_1_1_1490097105280_373" height="50" width="200">'
+                                 '<h5>Courtesy of Zillow</h5><a href="'+comps+'"target="_blank">Home Comps</a><br><a href="'+data+'"target="_blank">Area Graphs and Data</a><br><a href="'+details+'"target="_blank">Additional Details</a><br><a href="'+map+'"target="_blank">Map this home</a><br><img src="http://www.zillow.com/widgets/GetVersionedResource.htm?path=/static/logos/Zillowlogo_200x50.gif" alt="Zillow Real Estate Search" id="yui_3_18_1_1_1490097105280_373" height="50" width="200">'
                               );
                                 $('.sourceInfo').empty();
                                 $('.sourceInfo').append(links);
@@ -386,25 +393,17 @@ $.ajax({
           }
        });
 
-
-
-
-                    database.ref().push({
-
-                       city2 : city,
-                       state2 : state,
-
-                       dateAdded : firebase.database.ServerValue.TIMESTAMP
-
-                      });
-
-
-                  });
-                }
-
+            database.ref().push({
+               street2: "--",
+               city2 : city,
+               state2 : state,
+               zip2 : "--",
+               dateAdded : firebase.database.ServerValue.TIMESTAMP
+             });
+          });
+        }
 //Allow the modal to be triggered
 $(document).ready(function(){
 // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
   $('.modal').modal();
-// $('#noMatch').hide();
   });
