@@ -25,14 +25,24 @@ var database = firebase.database();
 //   console.log("The read failed: " + errorObject.code);
 // });
 //populate recent searches from firebase and limit to the last 10 searches
-database.ref().orderByChild('dateAdded').limitToLast(10).on('child_added', function(childSnapshot1){
+database.ref().orderByChild('dateAdded').limitToLast(20).on('child_added', function(childSnapshot1){
   var obj = childSnapshot1.val();
-// console.log(obj1);
+
+ console.log(obj);
 // build the recent searches table
   $('#myTable thead:last').after('<tr><td>'+ obj.streetAddress2 +'</td><td>'+ obj.city2 +'</td><td>'+ obj.state2 +'</td><td>'+ obj.neighborhood2+'</td>');
+
 }, function(errorObject) {
   console.log("The read failed: " + errorObject.code);
 });
+$("#myTable").tablesorter({
+      widthFixed: false
+    })
+    .tablesorterPager({
+        container: $(".ts-pager")
+    });
+
+
 //get initial autocomplete functionality on seach and produce google map of input
  function initAutocomplete() {
          //create map variable and places map in the div with id 'map'
