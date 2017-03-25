@@ -2,7 +2,7 @@
 var config = {
     apiKey: "AIzaSyASg1TVyLnJi2SgnqEGX0lqgy4vKY0ViYg",
     authDomain: "neighborhoodexplorer-b82d5.firebaseapp.com",
-    databaseURL: "https://neighborhoodexplorer-b82d5.firebaseio.com",
+    databaseURL: "http://neighborhoodexplorer-b82d5.firebaseio.com",
     storageBucket: "neighborhoodexplorer-b82d5.appspot.com",
     messagingSenderId: "852891560151"
   };
