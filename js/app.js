@@ -256,7 +256,7 @@ console.log('http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1
 //get list of neighborhoods for address entered using api call to zillow using Region Children url
      $.ajax({
              dataType: "xml",
-             url: 'http://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood',
+             url: 'https://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood',
              method: "GET"
          })
          // After the data comes back from the API
@@ -282,7 +282,7 @@ console.log('http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1
               });
                 $.ajax({
                         dataType: "xml",
-                        url: 'http://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address='+streetAddress+'&citystatezip='+cityStateZip,
+                        url: 'https://www.zillow.com/webservice/GetDeepSearchResults.htm?zws-id=X1-ZWz19b7ds3exor_305s0&address='+streetAddress+'&citystatezip='+cityStateZip,
                         method: "GET"
                     })
                     // After the data comes back from the API - this is hte zillow deep search results where we get details on specific address.
@@ -369,7 +369,7 @@ if (options.crossDomain && jQuery.support.cors) {
 //get list of neighborhoods for address entered using api call to zillow using Region Children url
 $.ajax({
     dataType: "xml",
-    url: 'http://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood',
+    url: 'https://www.zillow.com/webservice/GetRegionChildren.htm?zws-id=X1-ZWz19b7ds3exor_305s0&state='+state+'&city='+city+'&childtype=neighborhood',
     method: "GET"
 })
 // After the data comes back from the API
