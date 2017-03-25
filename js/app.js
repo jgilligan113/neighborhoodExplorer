@@ -35,12 +35,6 @@ database.ref().orderByChild('dateAdded').limitToLast(20).on('child_added', funct
 }, function(errorObject) {
   console.log("The read failed: " + errorObject.code);
 });
-$("#myTable").tablesorter({
-      widthFixed: false
-    })
-    .tablesorterPager({
-        container: $(".ts-pager")
-    });
 
 
 //get initial autocomplete functionality on seach and produce google map of input
